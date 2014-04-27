@@ -224,10 +224,17 @@ var MultipleTabService = {
 			)
 			return true;
 		var checked = { value: true };
+		var message;
+		try { // Firefox 28 and older
+			message = this.tabbrowserBundle.getFormattedString('tabs.closeWarningMultipleTabs', [aTabsCount]);
+		}
+		catch(e) { // Firefox 29 and later
+			message = PluralForm.get(aTabsCount, this.tabbrowserBundle.getString('tabs.closeWarningMultiple')).replace('#1', aTabsCount);
+		}
 		window.focus();
 		var shouldClose = Services.prompt.confirmEx(window,
 				this.tabbrowserBundle.getString('tabs.closeWarningTitle'),
-				this.tabbrowserBundle.getFormattedString('tabs.closeWarningMultipleTabs', [aTabsCount]),
+				message,
 				(Services.prompt.BUTTON_TITLE_IS_STRING * Services.prompt.BUTTON_POS_0) +
 				(Services.prompt.BUTTON_TITLE_CANCEL * Services.prompt.BUTTON_POS_1),
 				this.tabbrowserBundle.getString('tabs.closeButtonMultiple'),
